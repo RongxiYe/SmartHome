@@ -2,12 +2,10 @@ package com.group.smarthome.controller;
 
 import com.group.smarthome.pojo.User;
 import com.group.smarthome.service.Impl.UserServiceImpl;
-import com.group.smarthome.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -56,8 +54,28 @@ public class SmartController {
         }else{
             res.sendRedirect("/register.html");
         }
-
     }
 
+    @RequestMapping("/user/changepsw")
+    public void changePassword(@RequestParam("oldpsw") String oldpsw,
+                               @RequestParam("newpsw") String newpsw,
+                               HttpSession session){
+        //先调login查psw，再调change,最后再对比
+        User user = new User();
+        user.setUserName((String)session.getAttribute("username"));
+        user.setPassword(oldpsw);
+        String result = userService.loginCheck(user);
+        if (!result.equals("Login Success!")){
+            System.out.println("Wrong oldpsw!");
+        }else {
+            user.setPassword(newpsw);
+            String r = userService.changePswCheck(user);
+            if (r.equals("Change password Success!")){
+                System.out.println("Change password Success!");
+            }else{
+                System.out.println("Change password failed!");
+            }
+        }
+    }
 
 }

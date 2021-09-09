@@ -1,5 +1,6 @@
 package com.group.smarthome.service.Impl;
 
+import com.group.smarthome.dao.FamilyDAO;
 import com.group.smarthome.dao.UserDAO;
 import com.group.smarthome.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,15 @@ import java.nio.charset.StandardCharsets;
 public class UserServiceImpl {
 
     private UserDAO userDao;
+    private FamilyDAO familyDAO;
 
     @Autowired
     public void setUserDao(UserDAO userDao) {
         this.userDao = userDao;
+    }
+    @Autowired
+    public void setFamilyDAO(FamilyDAO familyDAO) {
+        this.familyDAO = familyDAO;
     }
 
     //check the login state
@@ -46,8 +52,16 @@ public class UserServiceImpl {
             }else{
                 return "Register failed!";
             }
-
         }
     }
 
+    public String changePswCheck(User user){
+        String md5psw = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+        String nowpsw = userDao.changePsw(user.getUserName(),md5psw);
+        if (nowpsw.equals(md5psw)){
+            return "Change password Success!";
+        }else{
+            return "Change password failed!";
+        }
+    }
 }

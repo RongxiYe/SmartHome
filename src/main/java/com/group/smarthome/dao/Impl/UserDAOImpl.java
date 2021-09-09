@@ -23,7 +23,7 @@ public class UserDAOImpl implements UserDAO {
         try{
             fid = jdbcTemplate.queryForObject(sql,String.class,userName);
         }catch (org.springframework.dao.EmptyResultDataAccessException e){
-            fid=null;
+            fid = null;
         }
 
         return fid;
@@ -37,7 +37,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public String queryPassword(String userName){
         String sql = "select password from user where userName=?";
-        String psw="";
+        String psw = "";
         try{
             psw = jdbcTemplate.queryForObject(sql,String.class,userName);
         }catch (org.springframework.dao.EmptyResultDataAccessException e) {
@@ -75,7 +75,7 @@ public class UserDAOImpl implements UserDAO {
     public String changePsw(String userName,String newpsw){
         String sql = "update user set password=? where username=?";
         jdbcTemplate.update(sql,newpsw,userName);
-        String nowpsw=queryPassword(userName);
+        String nowpsw = queryPassword(userName);
         return nowpsw;
     }
 
