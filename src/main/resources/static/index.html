@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="assets/css/layui.css" />
     <link rel="stylesheet" href="assets/css/admin.css" />
     <link rel="icon" href="/favicon.ico" />
-    <title>Smart Home web</title>
+    <title>Smart Home</title>
   </head>
   <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
@@ -24,16 +24,42 @@
         </ul>
 
         <ul class="layui-nav layui-layout-right">
-          <li class="layui-nav-item">Welcome username!</a>
+          <li class="layui-nav-item layuimini-setting">
+            <a href="javascript:;">admin</a>
+            <dl class="layui-nav-child">
+              <dd>
+                <a
+                  href="javascript:;"
+                  layuimini-content-href="page/user-setting.html"
+                  data-title="基本资料"
+                  data-icon="fa fa-gears"
+                  >基本资料<span class="layui-badge-dot"></span
+                ></a>
+              </dd>
+              <dd>
+                <a
+                  href="javascript:;"
+                  layuimini-content-href="page/user-password.html"
+                  data-title="修改密码"
+                  data-icon="fa fa-gears"
+                  >修改密码</a
+                >
+              </dd>
+              <dd>
+                <hr />
+              </dd>
+              <dd>
+                <a href="javascript:;" class="login-out">退出登录</a>
+              </dd>
+            </dl>
           </li>
-      </ul>
-
+        </ul>
       </div>
 
       <div class="layui-side custom-admin">
         <div class="layui-side-scroll">
           <div class="custom-logo">
-            <h1>Smart home</h1>
+            <center><h1>Smart Home</h1></center>
           </div>
           <ul id="Nav" class="layui-nav layui-nav-tree">
             <li class="layui-nav-item">
@@ -43,7 +69,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd>
-                  <a href="views/hardwareInfo.html">Hardware information</a>
+                  <a href="hardwareInfo.html">Hardware information</a>
                 </dd>
               </dl>
             </li>
@@ -54,7 +80,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd>
-                  <a href="views/hardwareAdd.html">Add new hardware</a>
+                  <a href="./views/hardwareAdd.html">Add new hardware</a>
                 </dd>
               </dl>
             </li>
@@ -66,8 +92,8 @@
               <dl class="layui-nav-child">
                 <dd>
                   <a href="views/account.html">My account</a>
-                  <a href="views/bind.html">Family</a>
                 </dd>
+                <dd><a href="bind.html">Family</a></dd>
               </dl>
             </li>
           </ul>
@@ -89,5 +115,42 @@
     </div>
     <script src="assets/layui.js"></script>
     <script src="index.js" data-main="home"></script>
+    <script>
+      layui.use(["jquery", "layer", "miniAdmin", "miniTongji"], function () {
+        var $ = layui.jquery,
+          layer = layui.layer,
+          miniAdmin = layui.miniAdmin,
+          miniTongji = layui.miniTongji;
+
+        var options = {
+          iniUrl: "api/init.json", // 初始化接口
+          clearUrl: "api/clear.json", // 缓存清理接口
+          urlHashLocation: true, // 是否打开hash定位
+          bgColorDefault: false, // 主题默认配置
+          multiModule: true, // 是否开启多模块
+          menuChildOpen: false, // 是否默认展开菜单
+          loadingTime: 0, // 初始化加载时间
+          pageAnim: true, // iframe窗口动画
+          maxTabNum: 20, // 最大的tab打开数量
+        };
+        miniAdmin.render(options);
+
+        // 百度统计代码，只统计指定域名
+        miniTongji.render({
+          specific: true,
+          domains: [
+            "99php.cn",
+            "layuimini.99php.cn",
+            "layuimini-onepage.99php.cn",
+          ],
+        });
+
+        $(".login-out").on("click", function () {
+          layer.msg("退出登录成功", function () {
+            window.location = "login.html";
+          });
+        });
+      });
+    </script>
   </body>
 </html>

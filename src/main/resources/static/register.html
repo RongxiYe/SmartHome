@@ -13,16 +13,10 @@
       href="./assets/images/favicon.ico"
       type="image/x-icon"
     />
-
     <style type="text/css">
       .divForm {
-        position: absolute; /*绝对定位*/
-        width: 400px;
-        height: 200px;
+        position: absolute;
         text-align: center; /*(让div中的内容居中)*/
-        top: 20%;
-        left: 50%;
-        margin-left: -150px;
       }
       .drag {
         width: 300px;
@@ -59,21 +53,29 @@
       }
       body {
         background-size: 100% 100%;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       a {
         font-weight: bolder;
       }
       .layui-form {
         opacity: 95%;
+        width: 360px;
+        height: 390px;
       }
     </style>
   </head>
   <body background="./assets/images/login.jpg">
     <div class="divForm layui-anim layui-anim-scaleSpring">
-      <form method="post" action="./register" class="layui-form">
+      <form method="post" action="/register" class="layui-form">
         <br />
         <div class="layui-form-item">
-          <label class="layui-form-label">Username</label>
+          <label class="layui-form-label"
+            ><i class="layui-icon">&#xe66f;</i> Username</label
+          >
           <div class="layui-input-block">
             <input
               type="username"
@@ -88,7 +90,9 @@
         </div>
 
         <div class="layui-form-item">
-          <label class="layui-form-label">Password</label>
+          <label class="layui-form-label">
+            <i class="layui-icon">&#xe673;</i> Password</label
+          >
           <div class="layui-input-block">
             <input
               type="password"
@@ -103,7 +107,9 @@
         </div>
 
         <div class="layui-form-item">
-          <label class="layui-form-label">Phone</label>
+          <label class="layui-form-label"
+            ><i class="layui-icon">&#xe678;</i> Phone</label
+          >
           <div class="layui-input-block">
             <input
               type="text"
@@ -120,7 +126,7 @@
         <div class="drag">
           <div class="bg"></div>
           <div class="textslide" onselectstart="return false;">
-            Please slide to unlock
+            Please slide to verify
           </div>
           <div class="btnslide">&gt;&gt;</div>
         </div>
@@ -133,14 +139,14 @@
               type="submit"
               name="submit"
               value="Create account"
-              onclick="validateCode()"
+              onclick="chk()"
               class="layui-btn layui-btn-normal"
             />
           </center>
         </div>
         <br />
         <center>
-          <a href="login.html" rel="">Already have an account? Click here!</a>
+          <a href="login.jsp" rel="">Already have an account? Click here!</a>
         </center>
       </form>
     </div>
@@ -188,7 +194,6 @@
           btn.style.left = offsetX + "px";
           bg.style.width = offsetX + "px";
 
-          window.success = success;
           //如果鼠标的水平移动距离 = 滑动成功的宽度
           if (offsetX == distance) {
             //1.设置滑动成功后的样式
@@ -230,8 +235,19 @@
         };
       };
       function validateCode() {
-        if ((window.success = false)) {
+        if ((success = false)) {
           alert("Please slide");
+        }
+      }
+    </script>
+    <script src="assets/layui.js"></script>
+    <script>
+      function chk() {
+        var tel = document.all("text").value;
+        if (/^13d{9}$/g.test(tel) || /^15[8,9]d{8}$/g.test(tel)) {
+          alert("手机号正确");
+        } else {
+          alert("手机号错误");
         }
       }
     </script>

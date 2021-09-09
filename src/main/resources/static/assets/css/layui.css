@@ -1755,11 +1755,11 @@ hr {
 .layui-form-label {
   float: left;
   display: block;
-  padding: 9px 15px;
-  width: 80px;
-  font-weight: 600;
-  line-height: 20px;
-  text-align: right;
+  padding: 12px 0px;
+  width: 85px;
+  font-weight: 420;
+  line-height: 25px;
+  text-align: left;
   color: rgb(0, 0, 0);
 }
 .layui-form-label-col {

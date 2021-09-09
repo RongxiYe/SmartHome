@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="../assets/css/layui.css" />
+    <link rel="stylesheet" href="../assets/css/view.css" />
+    <title></title>
+  </head>
+  <body class="layui-view-body">
+    <div class="layui-content">
+      <div class="layui-row">
+        <div class="layui-card">
+          <div class="layui-card-header">
+            <i class="layui-icon" style="font-size: 20px">&#xe614;</i>Modify
+            your Password
+          </div>
+          <form
+            class="layui-form layui-card-body"
+            action="./modifypsw"
+            method="post"
+          >
+            <div class="layui-form-item">
+              <label class="layui-form-label">Previous Password</label>
+              <div class="layui-input-inline">
+                <input
+                  type="password"
+                  name="oldpsw"
+                  required
+                  lay-verify="required"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+              <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">New Password</label>
+              <div class="layui-input-inline">
+                <input
+                  type="password"
+                  name="newpsw"
+                  required
+                  lay-verify="required"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+              <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <input
+                  type="submit"
+                  name="submit"
+                  value="submit"
+                  class="layui-btn layui-btn-blue"
+                  lay-submit
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-content">
+      <div class="layui-row">
+        <div class="layui-card">
+          <div class="layui-card-header">
+            <i class="layui-icon" style="font-size: 20px">&#xe716;</i>Modify
+            your Phone number
+          </div>
+          <form
+            class="layui-form layui-card-body"
+            action="./modifyphone"
+            method="post"
+          >
+            <div class="layui-form-item">
+              <label class="layui-form-label">Previous phone</label>
+              <div class="layui-input-inline">
+                <input
+                  type="text"
+                  name="oldphone"
+                  required
+                  lay-verify="required"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">New phone</label>
+              <div class="layui-input-inline">
+                <input
+                  type="text"
+                  name="newphone"
+                  required
+                  lay-verify="required"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <input
+                  type="submit"
+                  name="submit"
+                  value="submit"
+                  class="layui-btn layui-btn-blue"
+                  lay-submit
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="../assets/layui.all.js"></script>
+    <script>
+      var form = layui.form,
+        layer = layui.layer;
+    </script>
+  </body>
+</html>
