@@ -1,0 +1,13 @@
+spring:
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  datasource:
+    username: "root"
+    password: "Mysqladmin0x01"
+    url: jdbc:mysql://127.0.0.1:3306/new_schema?useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8081
