@@ -78,4 +78,27 @@ public class SmartController {
         }
     }
 
+
+//    @RequestMapping("/user/changephone")
+//    public void changePhone(@RequestParam("oldphone") String oldphone,
+//                               @RequestParam("newphone") String newphone,
+//                               HttpSession session) {
+//        //先调login查psw，再调change,最后再对比
+//        User user = new User();
+//        user.setUserName((String) session.getAttribute("username"));
+//        user.setPassword(oldphone);
+//        String result = userService.loginCheck(user);
+//        if (!result.equals("Login Success!")) {
+//            System.out.println("Wrong oldphone!");
+//        } else {
+//            user.setPassword(newphone);
+//            String r = userService.changePswCheck(user);
+//            if (r.equals("Change phone Success!")) {
+//                System.out.println("Change phone Success!");
+//            } else {
+//                System.out.println("Change phone failed!");
+//            }
+//        }
+//    }
+
 }
