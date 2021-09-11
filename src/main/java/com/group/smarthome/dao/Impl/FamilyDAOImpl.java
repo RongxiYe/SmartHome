@@ -39,6 +39,6 @@ public class FamilyDAOImpl implements FamilyDAO {
         }catch (org.springframework.dao.EmptyResultDataAccessException e) {
             family = null;
         }
-        return null;
+        return family;
     }
 }

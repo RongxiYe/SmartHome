@@ -1,15 +1,18 @@
 package com.group.smarthome.controller;
 
+import com.group.smarthome.pojo.Family;
 import com.group.smarthome.pojo.User;
 import com.group.smarthome.service.Impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 @Controller
@@ -79,26 +82,35 @@ public class SmartController {
     }
 
 
-//    @RequestMapping("/user/changephone")
-//    public void changePhone(@RequestParam("oldphone") String oldphone,
-//                               @RequestParam("newphone") String newphone,
-//                               HttpSession session) {
-//        //先调login查psw，再调change,最后再对比
-//        User user = new User();
-//        user.setUserName((String) session.getAttribute("username"));
-//        user.setPassword(oldphone);
-//        String result = userService.loginCheck(user);
-//        if (!result.equals("Login Success!")) {
-//            System.out.println("Wrong oldphone!");
-//        } else {
-//            user.setPassword(newphone);
-//            String r = userService.changePswCheck(user);
-//            if (r.equals("Change phone Success!")) {
-//                System.out.println("Change phone Success!");
-//            } else {
-//                System.out.println("Change phone failed!");
-//            }
-//        }
-//    }
+    @RequestMapping("/user/changephone")
+    public void changePhone(@RequestParam("oldphone") String oldphone,
+                               @RequestParam("newphone") String newphone,
+                               HttpSession session) {
+        User user = new User();
+        user.setUserName((String) session.getAttribute("username"));
+        user.setPassword(oldphone);
+        user.setPhoneNum(newphone);
+        String r = userService.changePhoneCheck(user);
+        if (r.equals("Wrong old phone!")) {
+            System.out.println("Wrong old phone!");
+        } else if(r.equals("Change phone failed!")){
+            System.out.println("Change phone failed!");
+        } else {
+            System.out.println("Change phone Success!");
+        }
+    }
 
+//    @GetMapping("/views/account.html")
+    public void queryInfo(HttpSession session){
+        User user = new User();
+        user.setUserName((String)session.getAttribute("username"));
+        ArrayList<Object> arraylist = userService.queryInfo(user);
+        System.out.println("username: "+user.getUserName());
+        System.out.println("phone: "+(String)arraylist.get(0));
+        System.out.println("Family information:");
+        Family family = (Family)arraylist.get(1);
+        System.out.println("address: "+family.getAddress());
+        System.out.println("postcode: "+family.getPostcode());
+
+    }
 }

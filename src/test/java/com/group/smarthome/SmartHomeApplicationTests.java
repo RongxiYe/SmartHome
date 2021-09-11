@@ -1,20 +1,19 @@
 package com.group.smarthome;
 
+import com.group.smarthome.utils.MD5Crypto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.DigestUtils;
 
-import javax.sql.DataSource;
 
 @SpringBootTest
 class SmartHomeApplicationTests {
 
-    @Autowired
-    DataSource dataSource;
-
     @Test
     void contextLoads() {
-        System.out.println(dataSource.getClass());
+        String str = "111";
+        System.out.println(MD5Crypto.encrypt(str));
     }
 
 }
