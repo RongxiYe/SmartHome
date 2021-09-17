@@ -3,11 +3,13 @@ package com.group.smarthome.controller;
 import com.group.smarthome.pojo.Family;
 import com.group.smarthome.pojo.User;
 import com.group.smarthome.service.Impl.UserServiceImpl;
+import com.group.smarthome.utils.RegistCheck;
+import com.group.smarthome.utils.SessionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-@Controller
+@RestController
 public class SmartController {
     private UserServiceImpl userService;
 
@@ -24,39 +26,73 @@ public class SmartController {
         this.userService = userService;
     }
 
-    @RequestMapping("/login")
-    public void login(@RequestParam("username") String username,
+    public SessionCheck isLogin(HttpSession session){
+        SessionCheck sessionCheck = new SessionCheck(null,null);
+        if(session.getAttribute("username")==null) {
+            sessionCheck.setIsLogin("false");
+            sessionCheck.setUsername(null);
+        }else{
+            sessionCheck.setIsLogin("true");
+            sessionCheck.setUsername((String)session.getAttribute("username"));
+        }
+        return sessionCheck;
+    }
+
+    @PostMapping("/login")
+    public SessionCheck login(@RequestParam("userName") String username,
                         @RequestParam("password") String password,
                         HttpSession session, HttpServletResponse res) throws IOException {
         User user = new User();
+        SessionCheck sessionCheck = new SessionCheck(null,null);
         user.setUserName(username);
         user.setPassword(password);
         String result=userService.loginCheck(user);
-        if (result.equals("Login Success!")){
-            session.setAttribute("username", username);
-            res.sendRedirect("/index.html");
+        if (result.equals("No Such User! Please register!")){
+            sessionCheck.setIsLogin("NoSuchUser");
+            sessionCheck.setUsername(null);
+        }else if(result.equals("Wrong Password!")){
+            sessionCheck.setIsLogin("Wrong Password!");
+            sessionCheck.setUsername(username);
         }else{
-            res.sendRedirect("/login.html");
+            session.setAttribute("username", username);
+            sessionCheck.setIsLogin("true");
+            sessionCheck.setUsername(username);
         }
         System.out.println(session.getAttribute("username"));
+        System.out.println(sessionCheck);
+        return sessionCheck;
     }
 
-    @RequestMapping("/register")
-    public void register(@RequestParam("username") String username,
+    @PostMapping("/register")
+    public RegistCheck register(@RequestParam("userName") String username,
                          @RequestParam("password") String password,
-                         @RequestParam("phone") String phone,
+                         @RequestParam("checkPass") String checkpass,
+                         @RequestParam("userPhone") String phone,
                          HttpSession session, HttpServletResponse res) throws IOException {
         User user = new User();
+        RegistCheck rc = new RegistCheck();
         user.setUserName(username);
         user.setPassword(password);
         user.setPhoneNum(phone);
         String result=userService.registerCheck(user);
-        if (result.equals("Register Success!")){
-            session.setAttribute("username", username);
-            res.sendRedirect("/login.html");
+        if (!checkpass.equals(password)){
+            rc.setPswCons("false");
+            rc.setUserExist(null);
+            rc.setRegisterState("false");
+        }else if (result.equals("User name already exists!")){
+            rc.setPswCons("true");
+            rc.setUserExist("true");
+            rc.setRegisterState("false");
+        }else if(result.equals("Register failed!")){
+            rc.setPswCons("true");
+            rc.setUserExist("false");
+            rc.setRegisterState("false");
         }else{
-            res.sendRedirect("/register.html");
+            rc.setPswCons("true");
+            rc.setUserExist("false");
+            rc.setRegisterState("true");
         }
+        return rc;
     }
 
     @RequestMapping("/user/changepsw")

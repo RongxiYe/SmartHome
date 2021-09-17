@@ -12,7 +12,7 @@ class SmartHomeApplicationTests {
 
     @Test
     void contextLoads() {
-        String str = "111";
+        String str = "222";
         System.out.println(MD5Crypto.encrypt(str));
     }
 
