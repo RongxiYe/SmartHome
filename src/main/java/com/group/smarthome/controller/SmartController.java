@@ -3,13 +3,10 @@ package com.group.smarthome.controller;
 import com.group.smarthome.pojo.Family;
 import com.group.smarthome.pojo.User;
 import com.group.smarthome.service.Impl.UserServiceImpl;
-import com.group.smarthome.utils.RegistCheck;
-import com.group.smarthome.utils.SessionCheck;
+import com.group.smarthome.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,6 +23,9 @@ public class SmartController {
         this.userService = userService;
     }
 
+
+//    @GetMapping("/components/*")
+//    @GetMapping(value={"/views/*"})
     public SessionCheck isLogin(HttpSession session){
         SessionCheck sessionCheck = new SessionCheck(null,null);
         if(session.getAttribute("username")==null) {
@@ -35,9 +35,12 @@ public class SmartController {
             sessionCheck.setIsLogin("true");
             sessionCheck.setUsername((String)session.getAttribute("username"));
         }
+        System.out.println(sessionCheck.toString());
         return sessionCheck;
     }
 
+
+//    @RequestMapping("/login")
     @PostMapping("/login")
     public SessionCheck login(@RequestParam("userName") String username,
                         @RequestParam("password") String password,
@@ -57,11 +60,13 @@ public class SmartController {
             session.setAttribute("username", username);
             sessionCheck.setIsLogin("true");
             sessionCheck.setUsername(username);
+            res.sendRedirect("/index.html");//最后去掉
         }
         System.out.println(session.getAttribute("username"));
         System.out.println(sessionCheck);
         return sessionCheck;
     }
+
 
     @PostMapping("/register")
     public RegistCheck register(@RequestParam("userName") String username,
@@ -95,58 +100,159 @@ public class SmartController {
         return rc;
     }
 
-    @RequestMapping("/user/changepsw")
-    public void changePassword(@RequestParam("oldpsw") String oldpsw,
+
+    @PostMapping("/user/changepsw")
+    public Cpsw changePassword(@RequestParam("oldpsw") String oldpsw,
                                @RequestParam("newpsw") String newpsw,
                                HttpSession session){
-        //先调login查psw，再调change,最后再对比
         User user = new User();
+        Cpsw cpsw = new Cpsw();
+        if (oldpsw==null||newpsw==null||oldpsw.trim().equals("")||newpsw.trim().equals("")){
+            cpsw.setCpswState("inputNull");
+            cpsw.setIsCpswSuccess("false");
+            return cpsw;
+        }
         user.setUserName((String)session.getAttribute("username"));
         user.setPassword(oldpsw);
         String result = userService.loginCheck(user);
         if (!result.equals("Login Success!")){
             System.out.println("Wrong oldpsw!");
+            cpsw.setIsCpswSuccess("false");
+            cpsw.setCpswState("WrongPsw");
         }else {
+            if (oldpsw.equals(newpsw)){
+                cpsw.setIsCpswSuccess("false");
+                cpsw.setCpswState("SamePsw");
+                return cpsw;
+            }
             user.setPassword(newpsw);
             String r = userService.changePswCheck(user);
             if (r.equals("Change password Success!")){
                 System.out.println("Change password Success!");
+                cpsw.setIsCpswSuccess("true");
+                cpsw.setCpswState("Success");
             }else{
                 System.out.println("Change password failed!");
+                cpsw.setIsCpswSuccess("false");
+                cpsw.setCpswState("UnknownError");
             }
         }
+        return cpsw;
     }
 
 
-    @RequestMapping("/user/changephone")
-    public void changePhone(@RequestParam("oldphone") String oldphone,
-                               @RequestParam("newphone") String newphone,
-                               HttpSession session) {
+    @PostMapping("/user/changephone")
+    public Cph changePhone(@RequestParam("oldphone") String oldphone,
+                           @RequestParam("newphone") String newphone,
+                           HttpSession session) {
         User user = new User();
+        Cph cph = new Cph();
+        if (oldphone==null||newphone==null||oldphone.trim().equals("")||newphone.trim().equals("")){
+            cph.setCphState("inputNull");
+            cph.setIsCphSuccess("false");
+            return cph;
+        }
         user.setUserName((String) session.getAttribute("username"));
         user.setPassword(oldphone);
         user.setPhoneNum(newphone);
         String r = userService.changePhoneCheck(user);
         if (r.equals("Wrong old phone!")) {
             System.out.println("Wrong old phone!");
-        } else if(r.equals("Change phone failed!")){
+            cph.setCphState("WrongPhone");
+            cph.setIsCphSuccess("false");
+        } else if(oldphone.equals(newphone)){
+            cph.setCphState("SamePhone");
+            cph.setIsCphSuccess("false");
+        }else if(r.equals("Change phone failed!")){
             System.out.println("Change phone failed!");
+            cph.setCphState("UnknownError");
+            cph.setIsCphSuccess("false");
         } else {
             System.out.println("Change phone Success!");
+            cph.setCphState("Success");
+            cph.setIsCphSuccess("true");
         }
+        System.out.println(cph);
+        return cph;
     }
 
-//    @GetMapping("/views/account.html")
-    public void queryInfo(HttpSession session){
+
+    @GetMapping("/components/individuals.html")
+    public Object personalInfo(HttpSession session){
+        if (isLogin(session).getIsLogin().equals("false")){
+            return isLogin(session);
+        }
         User user = new User();
         user.setUserName((String)session.getAttribute("username"));
-        ArrayList<Object> arraylist = userService.queryInfo(user);
-        System.out.println("username: "+user.getUserName());
-        System.out.println("phone: "+(String)arraylist.get(0));
-        System.out.println("Family information:");
-        Family family = (Family)arraylist.get(1);
-        System.out.println("address: "+family.getAddress());
-        System.out.println("postcode: "+family.getPostcode());
+        user.setPhoneNum(userService.personalInfo(user));
+        user.setPassword(null);
+        user.setUserID(null);
+        user.setFAMILY_familyID(null);
+        return user;
+    }
 
+    @GetMapping("/components/family.html")
+    public Object queryFamilyInfo(HttpSession session){
+        if (isLogin(session).getIsLogin().equals("false")){
+            return isLogin(session);
+        }
+        User user = new User();
+        user.setUserName((String)session.getAttribute("username"));
+
+        ArrayList<Object> al = userService.queryFamilyInfo(user);
+        return al;
+    }
+
+    @PostMapping("/user/createFamily")
+    public CBFamily createFamily(@RequestParam("address") String address,
+                               @RequestParam("postcode") String postcode,
+                               HttpSession session){
+        User user = new User();
+        Family family = new Family();
+        CBFamily cb = new CBFamily();
+        if (address==null||postcode==null||address.trim().equals("")||postcode.trim().equals("")){
+            cb.setState("InputNull");
+            cb.setIsSuccess("false");
+            return cb;
+        }
+        user.setUserName((String) session.getAttribute("username"));
+        family.setAddress(address);
+        family.setPostcode(postcode);
+        String r = userService.createFamily(user,family);
+        if (r.equals("Create Success!")){
+            cb.setState("Success");
+            cb.setIsSuccess("true");
+        }else{
+            cb.setState("UnknownError");
+            cb.setIsSuccess("false");
+        }
+        return cb;
+
+    }
+
+    @PostMapping("/user/bindFamily")
+    public Object bindFamily(@RequestParam("familyID") String fid,HttpSession session){
+        User user = new User();
+        Family family = new Family();
+        CBFamily cb = new CBFamily();
+        if (fid==null||fid.trim().equals("")){
+            cb.setState("InputNull");
+            cb.setIsSuccess("false");
+            return cb;
+        }
+        user.setUserName((String) session.getAttribute("username"));
+        family.setFamilyID(fid);
+        String r = userService.bindFamily(user,family);
+        if (r.equals("Wrong FamilyID!")){
+            cb.setState("WrongFid");
+            cb.setIsSuccess("false");
+        }else if (r.equals("Bind Success!")){
+            cb.setState("Success");
+            cb.setIsSuccess("true");
+        }else{
+            cb.setState("UnknownError");
+            cb.setIsSuccess("false");
+        }
+        return cb;
     }
 }

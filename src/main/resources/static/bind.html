@@ -17,7 +17,7 @@
           </div>
           <form
             class="layui-form layui-card-body"
-            action="./bindfamily"
+            action="/user/bindFamily"
             method="post"
           >
             <div class="layui-form-item">
@@ -25,7 +25,7 @@
               <div class="layui-input-inline">
                 <input
                   type="text"
-                  name="fid"
+                  name="familyID"
                   required
                   lay-verify="required"
                   autocomplete="off"
@@ -61,7 +61,7 @@
           <form
             class="layui-form layui-card-body"
             method="post"
-            action="./createfamily"
+            action="/user/createFamily"
           >
             <div class="layui-form-item">
               <label class="layui-form-label">Address</label>

@@ -7,10 +7,7 @@ import com.group.smarthome.pojo.User;
 import com.group.smarthome.utils.MD5Crypto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
-import java.awt.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 @Service
@@ -83,22 +80,59 @@ public class UserServiceImpl {
         }
     }
 
+    public String personalInfo(User user){
+        String phoneNum = userDao.queryPhone(user.getUserName());
+        return phoneNum;
+    }
 
-    public ArrayList<Object> queryInfo(User user){
+    public ArrayList<Object> queryFamilyInfo(User user){
         String fid = userDao.queryFamilyId(user.getUserName());
         System.out.println("fid: "+fid);
-        String phoneNum = userDao.queryPhone(user.getUserName());
+        ArrayList<Object> arraylist = new ArrayList<Object>();
         Family family = null;
+        ArrayList<User> useral = null;
         if (fid==null){
             family = null;
+            arraylist.add(0,null);
         }else{
             family = familyDAO.queryFamilyInfo(fid);
+            arraylist.add(0,family);
+            useral = familyDAO.queryFamilyMember(fid);
+            arraylist.add(1,useral);
         }
         System.out.println(family);
-        ArrayList<Object> arraylist = new ArrayList<Object>();
-        arraylist.add(0,phoneNum);
-        arraylist.add(1,family);
         System.out.println(arraylist);
+        System.out.println(useral);
         return arraylist;
+    }
+
+    public String createFamily(User user,Family family){
+        String fid = familyDAO.createFamilyInsert(family.getAddress(),family.getPostcode());
+        if(fid==null){
+            return "Create failed!";
+        }else{
+            familyDAO.bindFamilyInsert(fid,user.getUserName());
+            String nowfid = userDao.queryFamilyId(user.getUserName());
+            if (fid.equals(nowfid)){
+                return "Create Success!";
+            }else{
+                return "Create failed!";
+            }
+        }
+    }
+
+    public String bindFamily(User user,Family family){
+        boolean isunique = familyDAO.checkdUnique(family.getFamilyID());
+        if (isunique==true){
+            return "Wrong FamilyID!";
+        }else {
+            familyDAO.bindFamilyInsert(family.getFamilyID(), user.getUserName());
+            String nowfid = userDao.queryFamilyId(user.getUserName());
+            if (family.getFamilyID().equals(nowfid)) {
+                return "Bind Success!";
+            } else {
+                return "Bind failed!";
+            }
+        }
     }
 }

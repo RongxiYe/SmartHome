@@ -25,7 +25,9 @@ public class UserDAOImpl implements UserDAO {
         }catch (org.springframework.dao.EmptyResultDataAccessException e){
             fid = null;
         }
-
+        if (fid.equals("null")||fid.trim().equals("")){
+            fid = null;
+        }
         return fid;
     }
 //try{

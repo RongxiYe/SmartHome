@@ -28,4 +28,9 @@ public class RegistCheck {
     public void setRegisterState(String registerState) {
         this.registerState = registerState;
     }
+
+    @Override
+    public String toString() {
+        return "RegistCheck{"+pswCons+" "+userExist+" "+registerState+"}";
+    }
 }

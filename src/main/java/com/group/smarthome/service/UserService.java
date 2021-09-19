@@ -9,5 +9,6 @@ public interface UserService {
     public String registerCheck(User user);
     public String changePswCheck(User user);
     public String changePhoneCheck(User user);
-    public ArrayList<Object> queryInfo(User user);
+    public String personalInfo(User user);
+    public ArrayList<Object> queryFamilyInfo(User user);
 }
