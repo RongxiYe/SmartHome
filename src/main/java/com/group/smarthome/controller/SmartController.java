@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 @RestController
@@ -45,10 +46,13 @@ public class SmartController {
     public SessionCheck login(@RequestParam("userName") String username,
                         @RequestParam("password") String password,
                         HttpSession session, HttpServletResponse res) throws IOException {
+//        @RequestBody Map<String,Object> map
         User user = new User();
         SessionCheck sessionCheck = new SessionCheck(null,null);
         user.setUserName(username);
         user.setPassword(password);
+//        user.setUserName((String) map.get("userName"));
+//        user.setPassword((String) map.get("password"));
         String result=userService.loginCheck(user);
         if (result.equals("No Such User! Please register!")){
             sessionCheck.setIsLogin("NoSuchUser");
@@ -56,10 +60,13 @@ public class SmartController {
         }else if(result.equals("Wrong Password!")){
             sessionCheck.setIsLogin("Wrong Password!");
             sessionCheck.setUsername(username);
+//            sessionCheck.setUsername(user.getUserName());
         }else{
             session.setAttribute("username", username);
+//            session.setAttribute("username", user.getUserName());
             sessionCheck.setIsLogin("true");
             sessionCheck.setUsername(username);
+//            sessionCheck.setUsername(user.getUserName());
             res.sendRedirect("/index.html");//最后去掉
         }
         System.out.println(session.getAttribute("username"));
@@ -74,12 +81,17 @@ public class SmartController {
                          @RequestParam("checkPass") String checkpass,
                          @RequestParam("userPhone") String phone,
                          HttpSession session, HttpServletResponse res) throws IOException {
+//        @RequestBody Map<String,Object> map
         User user = new User();
         RegistCheck rc = new RegistCheck();
+//        user.setUserName((String) map.get("userName"));
+//        user.setPassword((String) map.get("password"));
+//        user.setPhoneNum((String) map.get("userPhone"));
         user.setUserName(username);
         user.setPassword(password);
         user.setPhoneNum(phone);
         String result=userService.registerCheck(user);
+//        (String) map.get("checkPass")
         if (!checkpass.equals(password)){
             rc.setPswCons("false");
             rc.setUserExist(null);
@@ -105,8 +117,11 @@ public class SmartController {
     public Cpsw changePassword(@RequestParam("oldpsw") String oldpsw,
                                @RequestParam("newpsw") String newpsw,
                                HttpSession session){
+//        @RequestBody Map<String,Object> map
         User user = new User();
         Cpsw cpsw = new Cpsw();
+//        oldpsw = (String) map.get("oldpsw");
+//        newpsw = (String) map.get("newpsw");
         if (oldpsw==null||newpsw==null||oldpsw.trim().equals("")||newpsw.trim().equals("")){
             cpsw.setCpswState("inputNull");
             cpsw.setIsCpswSuccess("false");
@@ -145,8 +160,11 @@ public class SmartController {
     public Cph changePhone(@RequestParam("oldphone") String oldphone,
                            @RequestParam("newphone") String newphone,
                            HttpSession session) {
+//        @RequestBody Map<String,Object> map
         User user = new User();
         Cph cph = new Cph();
+//        oldphone = (String) map.get("oldphone");
+//        newphone = (String) map.get("newphone");
         if (oldphone==null||newphone==null||oldphone.trim().equals("")||newphone.trim().equals("")){
             cph.setCphState("inputNull");
             cph.setIsCphSuccess("false");
@@ -207,9 +225,12 @@ public class SmartController {
     public CBFamily createFamily(@RequestParam("address") String address,
                                @RequestParam("postcode") String postcode,
                                HttpSession session){
+//        @RequestBody Map<String,Object> map
         User user = new User();
         Family family = new Family();
         CBFamily cb = new CBFamily();
+//        address = (String) map.get("address");
+//        postcode = (String) map.get("postcode");
         if (address==null||postcode==null||address.trim().equals("")||postcode.trim().equals("")){
             cb.setState("InputNull");
             cb.setIsSuccess("false");
@@ -231,10 +252,12 @@ public class SmartController {
     }
 
     @PostMapping("/user/bindFamily")
-    public Object bindFamily(@RequestParam("familyID") String fid,HttpSession session){
+    public CBFamily bindFamily(@RequestParam("familyID") String fid, HttpSession session){
+//        @RequestBody Map<String,Object> map
         User user = new User();
         Family family = new Family();
         CBFamily cb = new CBFamily();
+//        fid = (String) map.get("familyID");
         if (fid==null||fid.trim().equals("")){
             cb.setState("InputNull");
             cb.setIsSuccess("false");
@@ -255,4 +278,6 @@ public class SmartController {
         }
         return cb;
     }
+
+    @GetMapping("/components/console")
 }
