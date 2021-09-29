@@ -1,35 +1,31 @@
 package com.group.smarthome.pojo;
 
-public class LightData {
-    private String dataID;
-    private String time;
-    private String open;
+public class LightData extends Data{
     private String brightness;
-    private String HARDWARE_hardwareID;
-    private String mode;
+
 
     public String getDataID() {
-        return dataID;
+        return super.getDataID();
     }
 
     public void setDataID(String dataID) {
-        this.dataID = dataID;
+        super.setDataID(dataID);
     }
 
     public String getTime() {
-        return time;
+        return super.getTime();
     }
 
     public void setTime(String time) {
-        this.time = time;
+        super.setTime(time);
     }
 
     public String getOpen() {
-        return open;
+        return super.getData();
     }
 
     public void setOpen(String open) {
-        this.open = open;
+        super.setData(open);
     }
 
     public String getBrightness() {
@@ -41,10 +37,10 @@ public class LightData {
     }
 
     public String getHARDWARE_hardwareID() {
-        return HARDWARE_hardwareID;
+        return super.getHARDWARE_hardwareID();
     }
 
     public void setHARDWARE_hardwareID(String HARDWARE_hardwareID) {
-        this.HARDWARE_hardwareID = HARDWARE_hardwareID;
+        super.setHARDWARE_hardwareID(HARDWARE_hardwareID);
     }
 }

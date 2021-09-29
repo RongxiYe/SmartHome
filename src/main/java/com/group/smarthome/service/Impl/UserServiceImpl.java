@@ -4,6 +4,7 @@ import com.group.smarthome.dao.FamilyDAO;
 import com.group.smarthome.dao.UserDAO;
 import com.group.smarthome.pojo.Family;
 import com.group.smarthome.pojo.User;
+import com.group.smarthome.utils.HardInfo;
 import com.group.smarthome.utils.MD5Crypto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -134,5 +135,9 @@ public class UserServiceImpl {
                 return "Bind failed!";
             }
         }
+    }
+
+    public HardInfo viewHardInfo(User user){
+        return null;
     }
 }

@@ -1,9 +1,9 @@
 package com.group.smarthome.pojo;
 
-public class TemperatureData {
+public class Data {
     private String dataID;
     private String time;
-    private String temperature;
+    private String data;
     private String HARDWARE_hardwareID;
 
     public String getDataID() {
@@ -22,12 +22,12 @@ public class TemperatureData {
         this.time = time;
     }
 
-    public String getTemperature() {
-        return temperature;
+    public String getData() {
+        return data;
     }
 
-    public void setTemperature(String temperature) {
-        this.temperature = temperature;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getHARDWARE_hardwareID() {

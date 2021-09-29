@@ -279,5 +279,28 @@ public class SmartController {
         return cb;
     }
 
-    @GetMapping("/components/console")
+    @GetMapping("/components/home")
+    public Object viewHardInfo(HttpSession session) {
+        if (isLogin(session).getIsLogin().equals("false")){
+            return isLogin(session);
+        }
+        User user = new User();
+        user.setUserName((String)session.getAttribute("username"));
+        HardInfo hi = new HardInfo();
+        ArrayList<Object> al = userService.queryFamilyInfo(user);
+        if (al.get(0)==null){
+            hi.setHasHardware("NoFamily");
+            hi.setAbs(null);
+            hi.setHardNum(0);
+            return hi;
+        }
+        hi = userService.viewHardInfo(user);
+        return hi;
+    }
+
+    @PostMapping("/hard/add")
+    public AddHardState addHardware(@RequestParam("hardwareID") String hardwareID){
+//        @RequestBody Map<String,Object> map
+        return null;
+    }
 }
