@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 @Repository
 public class HardwareDAOImpl implements HardwareDAO {
@@ -64,7 +66,7 @@ public class HardwareDAOImpl implements HardwareDAO {
                 break;
         }
 
-        String sql = "select * from "+ table +" where HARDWARE_hardwareID=? ";//
+        String sql = "select * from "+ table +" where HARDWARE_hardwareID=? order by time desc";//
         List<Map<String, Object>> lm = null;
         try{
             lm = jdbcTemplate.queryForList(sql,hid);
@@ -76,17 +78,45 @@ public class HardwareDAOImpl implements HardwareDAO {
 
     //search if this hardware id exists
     public int queryHardId(String hid){
-
+        int flag = 0;
+        String sql = "select count(*) from hardware where hardwareID=?";
+        Map<String,Object> map = jdbcTemplate.queryForMap(sql,hid);
+        if ((int) map.get("count(*)")!=0){
+            flag = 1;
+        }
+        return flag;
     }
 
     //search if this hardware has binded with other family
     public int queryHardFamily(String hid){
-
+        int flag = 0;
+        String sql = "select FAMILY_familyID from hardware where hardwareID=?";
+        Map<String,Object> map = jdbcTemplate.queryForMap(sql,hid);
+        if (map.get("FAMILY_familyID")==null){
+            flag = 0;
+        }else{
+            if (((String)map.get("FAMILY_familyID")).trim().equals("0")){
+                flag = 0;
+            }else{
+                flag = 1;
+            }
+        }
+        return flag;
     }
 
     //bind operation
-    public int bindHardFamily(String hid,String fid){
-
+    public String bindHardFamily(String hid,String fid){
+        String state = "Failed";
+        String sql = "update hardware set FAMILY_familyID=? where hardwareID=?";
+        jdbcTemplate.update(sql,fid,hid);
+        sql = "select FAMILY_familyID from hardware where hardwareID=?";
+        String nowfid = jdbcTemplate.queryForObject(sql,String.class,hid);
+        if (nowfid!=null){
+            if (nowfid.equals(fid)){
+                state = "Success";
+            }
+        }
+        return state;
     }
 
     public String queryMName(String mid){
@@ -98,5 +128,60 @@ public class HardwareDAOImpl implements HardwareDAO {
             manufacturer = "Unknown";
         }
         return manufacturer;
+    }
+
+    public void updateLight(String hid,String open,String brightness){
+        String sql = "insert into lightdata (dataID,time,open,brightness,HARDWARE_hardwareID) values (?,?,?,?,?);";
+        String dataID = generateDataId();
+        String time = getTime();
+        jdbcTemplate.update(sql,dataID,time,open,brightness,hid);
+    }
+
+    public Map<String, Object> queryLight(String hid){
+        String sql = "select * from lightdata where HARDWARE_hardwareID=? order by time desc";
+        List<Map<String, Object>> list;
+        try{
+            list = jdbcTemplate.queryForList(sql,hid);
+        }catch (org.springframework.dao.EmptyResultDataAccessException e){
+            list = null;
+        }
+        Map<String, Object> map;
+        if (list!=null){
+            map = list.get(0);
+        }else {
+            map = null;
+        }
+        return map;
+    }
+
+    public boolean checkIdUnique(String dataID){
+        boolean isUnique=true;//表示生成的id没有出现过
+        String sql = "select HARDWARE_hardwareID from lightdata where dataID=?";
+        String hid = "";
+        try{
+            hid = jdbcTemplate.queryForObject(sql,String.class,dataID);
+        }catch (org.springframework.dao.EmptyResultDataAccessException e){
+            hid = null;
+        }
+        if (hid!=null){
+            isUnique=false;
+        }
+        return isUnique;
+    }
+
+    public String generateDataId(){
+        String dataID="";
+        do {
+            for(int i=0;i<11;i++) {
+                Integer j=(int)(Math.random()*11)%10;
+                dataID+=j.toString();
+            }
+        } while (!this.checkIdUnique(dataID));
+        return dataID;
+    }
+
+    public String getTime(){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return df.format(new Date());
     }
 }

@@ -7,6 +7,7 @@ import com.group.smarthome.pojo.Data;
 import com.group.smarthome.pojo.Family;
 import com.group.smarthome.pojo.LightData;
 import com.group.smarthome.pojo.User;
+import com.group.smarthome.utils.ControlLight;
 import com.group.smarthome.utils.HardAbstract;
 import com.group.smarthome.utils.HardInfo;
 import com.group.smarthome.utils.MD5Crypto;
@@ -151,7 +152,7 @@ public class UserServiceImpl {
         }
     }
 
-    public HardInfo viewHardInfo(User user) {
+    public HardInfo viewHardInfo(User user,int COUNT) {
         HardInfo hi = new HardInfo();
         ArrayList<HardAbstract> abs = new ArrayList<HardAbstract>();
         HardAbstract hab = new HardAbstract();
@@ -182,7 +183,7 @@ public class UserServiceImpl {
                     ListIterator<Map<String, Object>> li = lm.listIterator();
                     int count = 0;
                     if (hab.getHardType().equals("001")) {
-                        while (li.hasNext()&&count<=10) {
+                        while (li.hasNext()&&count<=COUNT) {
                             LightData l = new LightData();
                             Map<String, Object> map = li.next();
                             l.setTime((String) map.get("time"));
@@ -192,7 +193,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     } else if (hab.getHardType().equals("002") || hab.getHardType().equals("003") || hab.getHardType().equals("004")) {
-                        while (li.hasNext()&&count<=10) {
+                        while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
                             d.setData((String) map.get("movement"));
@@ -200,7 +201,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     }else if(hab.getHardType().equals("005")){
-                        while (li.hasNext()&&count<=10) {
+                        while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
                             d.setData((String) map.get("temperature"));
@@ -208,7 +209,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     }else if(hab.getHardType().equals("006")){
-                        while (li.hasNext()&&count<=10) {
+                        while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
                             d.setData((String) map.get("humidity"));
@@ -216,7 +217,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     }else{
-                        while (li.hasNext()&&count<=10) {
+                        while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
                             d.setData((String) map.get("smokeScope"));
@@ -232,4 +233,43 @@ public class UserServiceImpl {
         }
         return hi;
     }
+
+    public String addHardware(String username, String hid){
+        String state = "";
+        if (hardwareDAO.queryHardId(hid)==0){
+            state = "NoSuchHardID";
+        }else{
+            if (hardwareDAO.queryHardFamily(hid)==1){
+                state = "hasOwner";
+            }else{
+                if (userDao.queryFamilyId(username)==null){
+                    state = "NoSuchHardID";
+                }else{
+                    String fid = userDao.queryFamilyId(username);
+                    state = hardwareDAO.bindHardFamily(hid,fid);
+                }
+            }
+        }
+        return state;
+    }
+
+    public ControlLight controlLight(String hid,String open, String brightness){
+        hardwareDAO.updateLight(hid,open,brightness);
+        Map<String, Object> map = hardwareDAO.queryLight(hid);
+        ControlLight cl = new ControlLight();
+        cl.setIsSuccess("false");
+        cl.setOpen("No Value");
+        cl.setBrightness("No Value");
+        if (map!=null){
+            String nowopen = (String) map.get("open");
+            String nowb = (String) map.get("brightness");
+            if (nowopen.equals(open)&&nowb.equals(brightness)){
+                cl.setIsSuccess("true");
+                cl.setOpen(open);
+                cl.setBrightness(brightness);
+            }
+        }
+        return cl;
+    }
+
 }

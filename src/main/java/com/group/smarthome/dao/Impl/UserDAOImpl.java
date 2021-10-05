@@ -18,7 +18,7 @@ public class UserDAOImpl implements UserDAO {
     //check if the user has a family
     @Override
     public String queryFamilyId(String userName){
-        String sql = "select FAMILY_familyID from user where userName=?";
+        String sql = "select FAMILY_familyID from user where userName=?;";
         String fid = "";
         try{
             fid = jdbcTemplate.queryForObject(sql,String.class,userName);
