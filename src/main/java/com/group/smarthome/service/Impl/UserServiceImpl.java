@@ -189,7 +189,6 @@ public class UserServiceImpl {
                 } else {
                     hab.setHasData("true");
                     ListIterator<Map<String, Object>> li = lm.listIterator();
-                    d = new Data();
                     int count = 0;
                     if (hab.getHardType().equals("001")) {
                         while (li.hasNext()&&count<=COUNT) {
@@ -203,6 +202,7 @@ public class UserServiceImpl {
                         }
                     } else if (hab.getHardType().equals("002") || hab.getHardType().equals("003") || hab.getHardType().equals("004")) {
                         while (li.hasNext()&&count<=COUNT) {
+                            d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Integer) map.get("movement")).toString());
@@ -211,6 +211,7 @@ public class UserServiceImpl {
                         }
                     }else if(hab.getHardType().equals("005")){
                         while (li.hasNext()&&count<=COUNT) {
+                            d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Double) map.get("temperature")).toString());
@@ -219,6 +220,7 @@ public class UserServiceImpl {
                         }
                     }else if(hab.getHardType().equals("006")){
                         while (li.hasNext()&&count<=COUNT) {
+                            d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Double) map.get("humidity")).toString());
@@ -227,6 +229,7 @@ public class UserServiceImpl {
                         }
                     }else{
                         while (li.hasNext()&&count<=COUNT) {
+                            d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Double) map.get("smokeScope")).toString());
