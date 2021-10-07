@@ -3,6 +3,7 @@ package com.group.smarthome.dao.Impl;
 import com.group.smarthome.dao.HardwareDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -25,10 +26,11 @@ public class HardwareDAOImpl implements HardwareDAO {
         String sql = "select hardwareID,name,CATEGORY_categoryID,MANUFACTURER_manufacturerID from user u,hardware h "
                 +"where u.FAMILY_familyID=h.FAMILY_familyID and u.userName=?";
         List<Map<String, Object>> lm;
-        try{
-            lm = jdbcTemplate.queryForList(sql,username);
-        }catch (org.springframework.dao.EmptyResultDataAccessException e){
+        lm = jdbcTemplate.queryForList(sql,username);
+        if(lm.size()==0){
             lm = null;
+        }else{
+            System.out.println(lm.toString());
         }
         return lm;
     }
@@ -66,13 +68,13 @@ public class HardwareDAOImpl implements HardwareDAO {
                 break;
         }
 
-        String sql = "select * from "+ table +" where HARDWARE_hardwareID=? order by time desc";//
+        String sql = "select * from "+ table +" where HARDWARE_hardwareID=? order by time desc limit 0,10";//
         List<Map<String, Object>> lm = null;
-        try{
-            lm = jdbcTemplate.queryForList(sql,hid);
-        }catch (org.springframework.dao.EmptyResultDataAccessException e){
+        lm = jdbcTemplate.queryForList(sql,hid);
+        if(lm.size()==0){
             lm = null;
         }
+        System.out.println(lm.toString());
         return lm;
     }
 
@@ -80,8 +82,8 @@ public class HardwareDAOImpl implements HardwareDAO {
     public int queryHardId(String hid){
         int flag = 0;
         String sql = "select count(*) from hardware where hardwareID=?";
-        Map<String,Object> map = jdbcTemplate.queryForMap(sql,hid);
-        if ((int) map.get("count(*)")!=0){
+        int r = jdbcTemplate.queryForObject(sql,Integer.class,hid);
+        if (r != 0){
             flag = 1;
         }
         return flag;
@@ -110,7 +112,13 @@ public class HardwareDAOImpl implements HardwareDAO {
         String sql = "update hardware set FAMILY_familyID=? where hardwareID=?";
         jdbcTemplate.update(sql,fid,hid);
         sql = "select FAMILY_familyID from hardware where hardwareID=?";
-        String nowfid = jdbcTemplate.queryForObject(sql,String.class,hid);
+        String nowfid;
+        try{
+            nowfid = jdbcTemplate.queryForObject(sql,String.class,hid);
+        }catch (org.springframework.dao.EmptyResultDataAccessException e){
+            nowfid = null;
+        }
+
         if (nowfid!=null){
             if (nowfid.equals(fid)){
                 state = "Success";
@@ -142,9 +150,8 @@ public class HardwareDAOImpl implements HardwareDAO {
     public Map<String, Object> queryLight(String hid){
         String sql = "select * from lightdata where HARDWARE_hardwareID=? order by time desc";
         List<Map<String, Object>> list;
-        try{
-            list = jdbcTemplate.queryForList(sql,hid);
-        }catch (org.springframework.dao.EmptyResultDataAccessException e){
+        list = jdbcTemplate.queryForList(sql,hid);
+        if (list.size()==0){
             list = null;
         }
         Map<String, Object> map;

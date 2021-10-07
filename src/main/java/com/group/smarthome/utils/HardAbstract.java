@@ -12,6 +12,17 @@ public class HardAbstract {
     private String hardType;
     private ArrayList<Data> hd;
 
+    public HardAbstract(){}
+
+    public HardAbstract(String hardwareID, String name, String manufactureName, String hasData, String hardType, ArrayList<Data> hd) {
+        this.hardwareID = hardwareID;
+        this.name = name;
+        this.manufactureName = manufactureName;
+        this.hasData = hasData;
+        this.hardType = hardType;
+        this.hd = hd;
+    }
+
     public String getHardwareID() {
         return hardwareID;
     }

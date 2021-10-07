@@ -3,6 +3,14 @@ package com.group.smarthome.pojo;
 public class LightData extends Data{
     private String brightness;
 
+    public LightData() {
+    }
+
+    public LightData(String time, String data, String brightness) {
+        super(time, data);
+        this.brightness = brightness;
+    }
+
     public String getTime() {
         return super.getTime();
     }

@@ -2,6 +2,7 @@ package com.group.smarthome.service.Impl;
 
 import com.group.smarthome.dao.FamilyDAO;
 import com.group.smarthome.dao.HardwareDAO;
+import com.group.smarthome.dao.Impl.HardwareDAOImpl;
 import com.group.smarthome.dao.UserDAO;
 import com.group.smarthome.pojo.Data;
 import com.group.smarthome.pojo.Family;
@@ -14,6 +15,9 @@ import com.group.smarthome.utils.MD5Crypto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -155,8 +159,9 @@ public class UserServiceImpl {
     public HardInfo viewHardInfo(User user,int COUNT) {
         HardInfo hi = new HardInfo();
         ArrayList<HardAbstract> abs = new ArrayList<HardAbstract>();
-        HardAbstract hab = new HardAbstract();
-        Data data = new Data();
+        HardAbstract hab;
+//        debug
+//        hardwareDAO = new HardwareDAOImpl();
         List<Map<String, Object>> info = hardwareDAO.queryInfo(user.getUserName());
         if (info == null) {
             hi.setHasHardware("false");
@@ -167,26 +172,30 @@ public class UserServiceImpl {
             int num = hardwareDAO.queryHardNum(user.getUserName());
             hi.setHardNum(num);
             ListIterator<Map<String, Object>> lit = info.listIterator();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             while (lit.hasNext()) {
+                hab = new HardAbstract();
                 Map<String, Object> hard = lit.next();
                 hab.setHardwareID((String) hard.get("hardwareID"));
                 hab.setName((String) hard.get("name"));
                 hab.setHardType((String) hard.get("CATEGORY_categoryID"));
                 hab.setManufactureName(hardwareDAO.queryMName((String) hard.get("MANUFACTURER_manufacturerID")));
                 ArrayList<Data> hd = new ArrayList<Data>();
-                Data d = new Data();
+                Data d;
                 List<Map<String, Object>> lm = hardwareDAO.queryData((String) hard.get("hardwareID"), (String) hard.get("CATEGORY_categoryID"));
                 if (lm == null) {
                     hab.setHasData("false");
                     hab.setHd(null);
                 } else {
+                    hab.setHasData("true");
                     ListIterator<Map<String, Object>> li = lm.listIterator();
+                    d = new Data();
                     int count = 0;
                     if (hab.getHardType().equals("001")) {
                         while (li.hasNext()&&count<=COUNT) {
                             LightData l = new LightData();
                             Map<String, Object> map = li.next();
-                            l.setTime((String) map.get("time"));
+                            l.setTime(df.format((LocalDateTime) map.get("time")));
                             l.setData(((Integer) map.get("open")).toString());
                             l.setBrightness(((Integer) map.get("brightness")).toString());
                             hd.add(l);
@@ -195,7 +204,7 @@ public class UserServiceImpl {
                     } else if (hab.getHardType().equals("002") || hab.getHardType().equals("003") || hab.getHardType().equals("004")) {
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
-                            d.setTime((String) map.get("time"));
+                            d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Integer) map.get("movement")).toString());
                             hd.add(d);
                             count++;
@@ -203,7 +212,7 @@ public class UserServiceImpl {
                     }else if(hab.getHardType().equals("005")){
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
-                            d.setTime((String) map.get("time"));
+                            d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Double) map.get("temperature")).toString());
                             hd.add(d);
                             count++;
@@ -211,7 +220,7 @@ public class UserServiceImpl {
                     }else if(hab.getHardType().equals("006")){
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
-                            d.setTime((String) map.get("time"));
+                            d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Double) map.get("humidity")).toString());
                             hd.add(d);
                             count++;
@@ -219,7 +228,7 @@ public class UserServiceImpl {
                     }else{
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
-                            d.setTime((String) map.get("time"));
+                            d.setTime(df.format((LocalDateTime) map.get("time")));
                             d.setData(((Double) map.get("smokeScope")).toString());
                             hd.add(d);
                             count++;
@@ -235,6 +244,7 @@ public class UserServiceImpl {
     }
 
     public String addHardware(String username, String hid){
+
         String state = "";
         if (hardwareDAO.queryHardId(hid)==0){
             state = "NoSuchHardID";

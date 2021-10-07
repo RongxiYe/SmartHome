@@ -5,7 +5,13 @@ public class Data {
     private String time;
     private String data;
 
+    public Data() {
+    }
 
+    public Data(String time, String data) {
+        this.time = time;
+        this.data = data;
+    }
 
     public String getTime() {
         return time;

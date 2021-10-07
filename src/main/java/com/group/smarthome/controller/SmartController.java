@@ -210,7 +210,7 @@ public class SmartController {
     }
 
 
-    @GetMapping("/components/individuals.html")
+    @GetMapping("/individual")
     public JsonResult personalInfo(HttpSession session){
         if (isLogin(session).getCode()==1001){
             return isLogin(session);
@@ -224,7 +224,7 @@ public class SmartController {
         return JsonResult.isOk(user);
     }
 
-    @GetMapping("/components/family.html")
+    @GetMapping("/family")
     public JsonResult queryFamilyInfo(HttpSession session){
         if (isLogin(session).getCode()==1001){
             return isLogin(session);
@@ -295,7 +295,7 @@ public class SmartController {
         }
     }
 
-    @GetMapping("/components/home")
+    @GetMapping("/components/console")
     public JsonResult viewHardInfo(HttpSession session) {
         if (isLogin(session).getCode()==1001){
             return isLogin(session);
@@ -341,7 +341,7 @@ public class SmartController {
         }
     }
 
-    @GetMapping("/components/console")
+    @GetMapping("/components/home")
     public JsonResult console(HttpSession session){
         if (isLogin(session).getCode()==1001){
             return isLogin(session);
