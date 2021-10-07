@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d216d78"],{c3d6:function(e,n,c){"use strict";c.r(n);var t=function(){var e=this,n=e.$createElement,c=e._self._c||n;return c("h1",[e._v("hello33")])},o=[],a={name:"SmokeSensor"},l=a,r=c("2877"),s=Object(r["a"])(l,t,o,!1,null,"6ad3868c",null);n["default"]=s.exports}}]);
-//# sourceMappingURL=chunk-2d216d78.37149c9c.js.map

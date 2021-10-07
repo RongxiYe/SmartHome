@@ -45,8 +45,8 @@ public class UserServiceImpl {
     public String loginCheck(User user) {
         String psw = userDao.queryPassword(user.getUserName());
         String md5psw = MD5Crypto.encrypt(user.getPassword());
-        System.out.println(psw + "  " + md5psw);
-        System.out.println(psw.equals(md5psw));
+//        System.out.println(psw + "  " + md5psw);
+//        System.out.println(psw.equals(md5psw));
         if (psw == null) {
             return "No Such User! Please register!";
         } else if (!psw.equals(md5psw)) {
@@ -187,8 +187,8 @@ public class UserServiceImpl {
                             LightData l = new LightData();
                             Map<String, Object> map = li.next();
                             l.setTime((String) map.get("time"));
-                            l.setData((String) map.get("open"));
-                            l.setBrightness((String) map.get("brightness"));
+                            l.setData(((Integer) map.get("open")).toString());
+                            l.setBrightness(((Integer) map.get("brightness")).toString());
                             hd.add(l);
                             count++;
                         }
@@ -196,7 +196,7 @@ public class UserServiceImpl {
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
-                            d.setData((String) map.get("movement"));
+                            d.setData(((Integer) map.get("movement")).toString());
                             hd.add(d);
                             count++;
                         }
@@ -204,7 +204,7 @@ public class UserServiceImpl {
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
-                            d.setData((String) map.get("temperature"));
+                            d.setData(((Double) map.get("temperature")).toString());
                             hd.add(d);
                             count++;
                         }
@@ -212,7 +212,7 @@ public class UserServiceImpl {
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
-                            d.setData((String) map.get("humidity"));
+                            d.setData(((Double) map.get("humidity")).toString());
                             hd.add(d);
                             count++;
                         }
@@ -220,7 +220,7 @@ public class UserServiceImpl {
                         while (li.hasNext()&&count<=COUNT) {
                             Map<String, Object> map = li.next();
                             d.setTime((String) map.get("time"));
-                            d.setData((String) map.get("smokeScope"));
+                            d.setData(((Double) map.get("smokeScope")).toString());
                             hd.add(d);
                             count++;
                         }
@@ -261,12 +261,16 @@ public class UserServiceImpl {
         cl.setOpen("No Value");
         cl.setBrightness("No Value");
         if (map!=null){
-            String nowopen = (String) map.get("open");
-            String nowb = (String) map.get("brightness");
-            if (nowopen.equals(open)&&nowb.equals(brightness)){
+            Integer nowopen = (Integer) map.get("open");
+            Integer nowb = (Integer) map.get("brightness");
+            if (nowopen==Integer.parseInt(open)&&nowb==Integer.parseInt(brightness)){
                 cl.setIsSuccess("true");
                 cl.setOpen(open);
                 cl.setBrightness(brightness);
+            }else{
+                cl.setIsSuccess("false");
+                cl.setOpen(nowopen.toString());
+                cl.setBrightness(nowb.toString());
             }
         }
         return cl;

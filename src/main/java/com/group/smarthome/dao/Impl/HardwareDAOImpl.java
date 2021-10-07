@@ -34,7 +34,7 @@ public class HardwareDAOImpl implements HardwareDAO {
     }
 
     public int queryHardNum(String username){
-        String sql = "select hardwareID,name,CATEGORY_categoryID,MANUFACTURER_manufacturerID from user u,hardware h "
+        String sql = "select count(*) from user u,hardware h "
                 +"where u.FAMILY_familyID=h.FAMILY_familyID and u.userName=?";
         int num = jdbcTemplate.queryForObject(sql,Integer.class,username);
         return num;
@@ -131,10 +131,12 @@ public class HardwareDAOImpl implements HardwareDAO {
     }
 
     public void updateLight(String hid,String open,String brightness){
+        int openn = Integer.parseInt(open);
+        int brightnesss = Integer.parseInt(brightness);
         String sql = "insert into lightdata (dataID,time,open,brightness,HARDWARE_hardwareID) values (?,?,?,?,?);";
         String dataID = generateDataId();
         String time = getTime();
-        jdbcTemplate.update(sql,dataID,time,open,brightness,hid);
+        jdbcTemplate.update(sql,dataID,time,openn,brightnesss,hid);
     }
 
     public Map<String, Object> queryLight(String hid){

@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c26cc"],{"49f7":function(t,e,n){"use strict";n.r(e);var c=function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("el-result",{attrs:{icon:"warning",title:"已打开",subTitle:"可点击下方按钮关闭"}},[n("template",{slot:"extra"},[n("el-button",{attrs:{type:"success",round:""}},[t._v("CLOSE")])],1)],2)},s=[],a={name:"Window"},l=a,r=n("2877"),u=Object(r["a"])(l,c,s,!1,null,"06c2bda4",null);e["default"]=u.exports}}]);
-//# sourceMappingURL=chunk-2d0c26cc.f1762bdb.js.map
