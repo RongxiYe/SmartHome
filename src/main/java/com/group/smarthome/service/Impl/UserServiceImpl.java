@@ -191,7 +191,7 @@ public class UserServiceImpl {
                     ListIterator<Map<String, Object>> li = lm.listIterator();
                     int count = 0;
                     if (hab.getHardType().equals("001")) {
-                        while (li.hasNext()&&count<=COUNT) {
+                        while (li.hasNext()&&count<COUNT) {
                             LightData l = new LightData();
                             Map<String, Object> map = li.next();
                             l.setTime(df.format((LocalDateTime) map.get("time")));
@@ -201,7 +201,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     } else if (hab.getHardType().equals("002") || hab.getHardType().equals("003") || hab.getHardType().equals("004")) {
-                        while (li.hasNext()&&count<=COUNT) {
+                        while (li.hasNext()&&count<COUNT) {
                             d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));
@@ -210,7 +210,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     }else if(hab.getHardType().equals("005")){
-                        while (li.hasNext()&&count<=COUNT) {
+                        while (li.hasNext()&&count<COUNT) {
                             d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));
@@ -219,7 +219,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     }else if(hab.getHardType().equals("006")){
-                        while (li.hasNext()&&count<=COUNT) {
+                        while (li.hasNext()&&count<COUNT) {
                             d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));
@@ -228,7 +228,7 @@ public class UserServiceImpl {
                             count++;
                         }
                     }else{
-                        while (li.hasNext()&&count<=COUNT) {
+                        while (li.hasNext()&&count<COUNT) {
                             d = new Data();
                             Map<String, Object> map = li.next();
                             d.setTime(df.format((LocalDateTime) map.get("time")));

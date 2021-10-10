@@ -25,11 +25,14 @@ public class SmartController {
     }
 
 
-//    @GetMapping("/components/*")
-//    @GetMapping(value={"/views/*"})
+
     public JsonResult isLogin(HttpSession session){
         SessionCheck sessionCheck = new SessionCheck(null,null);
         if(session.getAttribute("username")==null) {
+            sessionCheck.setIsLogin("false");
+            sessionCheck.setUsername(null);
+            return JsonResult.isError(1001,sessionCheck,"NOT_LOG_IN");
+        }else if(((String)session.getAttribute("username")).trim().equals("")){
             sessionCheck.setIsLogin("false");
             sessionCheck.setUsername(null);
             return JsonResult.isError(1001,sessionCheck,"NOT_LOG_IN");
@@ -41,8 +44,12 @@ public class SmartController {
         }
     }
 
+//    @GetMapping("/")
+//    public void clearSession(HttpSession session){
+//        session.setAttribute("username",null);
+//    }
 
-//    @RequestMapping("/login")
+
     @PostMapping("/login")
     public JsonResult login(@RequestBody Map<String,Object> map,
                         HttpSession session, HttpServletResponse res) throws IOException {
@@ -366,15 +373,48 @@ public class SmartController {
     }
 
     @PostMapping("hard/controlLight")
+//    public JsonResult controlLight(@RequestBody Map<String,Object> map,HttpSession session){
+//        String open = (String) map.get("open");
+//        String brightness = (String) map.get("brightness");
+//        String hid = (String) map.get("hardwareID");
+//        ControlLight cl = userService.controlLight(hid,open,brightness);
+//        if (cl.getIsSuccess().equals("true")){
+//            return JsonResult.isOk(cl);
+//        }else{
+//            return JsonResult.isError(8001,cl,"CHANGE_FAILED");
+//        }
+//    }
     public JsonResult controlLight(@RequestBody Map<String,Object> map,HttpSession session){
         String open = (String) map.get("open");
         String brightness = (String) map.get("brightness");
         String hid = (String) map.get("hardwareID");
-        ControlLight cl = userService.controlLight(hid,open,brightness);
-        if (cl.getIsSuccess().equals("true")){
-            return JsonResult.isOk(cl);
-        }else{
-            return JsonResult.isError(8001,cl,"CHANGE_FAILED");
+        ControlLight cl = new ControlLight();
+        String state = readFile.changeLight(open,brightness);
+        if (state.equals("true")){
+            ArrayList<String> al = readFile.readJsonFile();
+            if (al!=null){
+                if (al.get(0).equals(open)&&al.get(1).equals(brightness)){
+                    cl.setIsSuccess("true");
+                    cl.setOpen(open);
+                    cl.setBrightness(brightness);
+                    return JsonResult.isOk(cl);
+                }else{
+                    cl.setIsSuccess("false");
+                    cl.setOpen(al.get(0));
+                    cl.setBrightness(al.get(1));
+                    return JsonResult.isError(8001,cl,"CHANGE_FAILED");
+                }
+            }
         }
+        cl.setIsSuccess("false");
+        cl.setOpen("0");
+        cl.setBrightness("0");
+        return JsonResult.isError(8001,cl,"CHANGE_FAILED");
     }
+
+//    @GetMapping("/path")
+//    public void getPath(){
+//        System.out.println(readFile.getPath());
+//
+//    }
 }

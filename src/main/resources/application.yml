@@ -5,9 +5,9 @@ spring:
       initialize-schema: always
   datasource:
     username: "root"
-    password: "Mysqladmin0x01"
+    password: ""
     url: jdbc:mysql://127.0.0.1:3306/mydb?useSSL=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:
-  port: 8081
+  port: 80
