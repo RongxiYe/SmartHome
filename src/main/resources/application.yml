@@ -5,9 +5,12 @@ spring:
       initialize-schema: always
   datasource:
     username: "root"
-    password: ""
-    url: jdbc:mysql://127.0.0.1:3306/mydb?useSSL=false&serverTimezone=UTC
+    password: "GWKBPvCiBNwpTw"
+    url: jdbc:mysql://107.174.196.241:3306/mydb?useSSL=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:/root/light/
 
 server:
   port: 80

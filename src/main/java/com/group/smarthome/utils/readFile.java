@@ -3,6 +3,7 @@ package com.group.smarthome.utils;
 import org.json.JSONException;
 import org.json.JSONStringer;
 import org.json.JSONObject;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,19 +11,9 @@ import java.util.ArrayList;
 
 public class readFile {
     private static String getPath(){
-        String root = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        File file =  new File(root).getParentFile();
-        return "/root/light.json";
+        return "/root/light/light.json";
     }
-    public static boolean isExist(){
-        String filename = getPath();
-        try {
-            FileReader fr = new FileReader(filename);
-        } catch (FileNotFoundException e) {
-            return false;
-        }
-        return true;
-    }
+
 
     public static ArrayList<String> readJsonFile() {
         String filename = getPath();
@@ -32,14 +23,14 @@ public class readFile {
             String s = "";
             String open = "";
             String brightness = "";
-            while((s = br.readLine()) != null){
-                try{
+            while((s = br.readLine()) != null) {
+                try {
                     JSONObject js = new JSONObject(s);
-                    open = (String)js.get("open");
+                    open = (String) js.get("open");
                     brightness = (String) js.get("brightness");
-                    al.add(0,open);
-                    al.add(1,brightness);
-                }catch (JSONException e){
+                    al.add(0, open);
+                    al.add(1, brightness);
+                } catch (JSONException e) {
                     al = null;
                 }
             }
@@ -57,7 +48,6 @@ public class readFile {
             System.out.println(file.getAbsolutePath());
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
-
             JSONStringer js = new JSONStringer();
             js.object();
             js.key("open");
@@ -72,6 +62,7 @@ public class readFile {
             System.out.println("true");
             return "true";
         }catch(IOException e){
+            e.printStackTrace();
             return "false";
         }
     }

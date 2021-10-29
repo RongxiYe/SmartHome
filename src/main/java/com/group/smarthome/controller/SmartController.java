@@ -392,16 +392,19 @@ public class SmartController {
         String state = readFile.changeLight(open,brightness);
         if (state.equals("true")){
             ArrayList<String> al = readFile.readJsonFile();
+            System.out.println(al);
             if (al!=null){
                 if (al.get(0).equals(open)&&al.get(1).equals(brightness)){
                     cl.setIsSuccess("true");
                     cl.setOpen(open);
                     cl.setBrightness(brightness);
+                    System.out.println("success");
                     return JsonResult.isOk(cl);
                 }else{
                     cl.setIsSuccess("false");
                     cl.setOpen(al.get(0));
                     cl.setBrightness(al.get(1));
+                    System.out.println("fail1");
                     return JsonResult.isError(8001,cl,"CHANGE_FAILED");
                 }
             }
@@ -409,6 +412,7 @@ public class SmartController {
         cl.setIsSuccess("false");
         cl.setOpen("0");
         cl.setBrightness("0");
+        System.out.println("fail2");
         return JsonResult.isError(8001,cl,"CHANGE_FAILED");
     }
 
