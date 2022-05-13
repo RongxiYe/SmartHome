@@ -5,8 +5,8 @@ spring:
       initialize-schema: always
   datasource:
     username: "root"
-    password: "GWKBPvCiBNwpTw"
-    url: jdbc:mysql://107.174.196.241:3306/mydb?useSSL=false&serverTimezone=UTC
+    password: "---"
+    url: jdbc:mysql://---/mydb?useSSL=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
   web:
     resources:
